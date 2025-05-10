@@ -1,0 +1,27 @@
+# 이 docker-compose.yml은 로컬 개발 환경에서 사용하기 위한 것입니다.
+# 실제 프로덕션 환경에서는 별도의 DB 서버를 사용합니다.
+
+services:
+  # PostgreSQL 데이터베이스 서버
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+
+  # Adminer: PHP 기반의 데이터베이스 관리 도구
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
