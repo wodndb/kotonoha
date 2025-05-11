@@ -16,7 +16,11 @@
    ```bash
    cp .template.env .env
    ```
-2. `docker compose up -d` 명령어로 DB 서버 실행  
+2. `docker compose up -d` 명령어로 DB 서버 실행
    (Adminer는 [http://localhost:8080](http://localhost:8080)에서 접속 가능)
 3. `yarn` 명령어로 의존성 패키지 설치
-4. `yarn dev` 명령어로 Next.js 애플리케이션 실행
+4. `yarn prisma generate` 명령어로 Prisma Client 생성
+5. `yarn prisma db push` 명령어로 DB 스키마 생성
+6. `yarn dev` 명령어로 Next.js 애플리케이션 실행
+
+# 개발자를 위한 데이터베이스 업데이트 절차 (작성 예정)

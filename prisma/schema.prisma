@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/app/generated/prisma"
@@ -15,7 +9,98 @@ datasource db {
 }
 
 model User {
-  id    String  @id @default(uuid())
-  email String  @unique
-  name  String?
+  id       String     @id @default(uuid())
+  email    String     @unique
+  name     String?
+  UserWord UserWord[]
+}
+
+model UserWord {
+  id          Int      @id @default(autoincrement())
+  userId      String
+  wordId      Int
+  studyStatus String
+  isFavorite  Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  word Word @relation(fields: [wordId], references: [id])
+
+  @@unique([userId, wordId])
+}
+
+model Word {
+  id           Int     @id @default(autoincrement())
+  text         String
+  type         String
+  level        String?
+  reading      String?
+  partOfSpeech String?
+
+  components WordComponent[]
+  meanings   WordMeaning[]
+  examples   Example[]
+  UserWord   UserWord[]
+
+  synonymsFrom WordSynonym[] @relation("SynonymFrom")
+  synonymsTo   WordSynonym[] @relation("SynonymTo")
+
+  antonymsFrom WordAntonym[] @relation("AntonymFrom")
+  antonymsTo   WordAntonym[] @relation("AntonymTo")
+}
+
+model WordComponent {
+  id      Int     @id @default(autoincrement())
+  wordId  Int
+  char    String
+  reading String?
+  type    String
+
+  word Word @relation(fields: [wordId], references: [id])
+}
+
+model Meaning {
+  id   Int    @id @default(autoincrement())
+  text String
+
+  words WordMeaning[]
+}
+
+model WordMeaning {
+  wordId    Int
+  meaningId Int
+
+  word    Word    @relation(fields: [wordId], references: [id])
+  meaning Meaning @relation(fields: [meaningId], references: [id])
+
+  @@id([wordId, meaningId])
+}
+
+model Example {
+  id          Int    @id @default(autoincrement())
+  wordId      Int
+  sentence    String
+  translation String
+
+  word Word @relation(fields: [wordId], references: [id])
+}
+
+model WordSynonym {
+  wordId    Int
+  synonymId Int
+
+  word    Word @relation("SynonymFrom", fields: [wordId], references: [id])
+  synonym Word @relation("SynonymTo", fields: [synonymId], references: [id])
+
+  @@id([wordId, synonymId])
+}
+
+model WordAntonym {
+  wordId    Int
+  antonymId Int
+
+  word    Word @relation("AntonymFrom", fields: [wordId], references: [id])
+  antonym Word @relation("AntonymTo", fields: [antonymId], references: [id])
+
+  @@id([wordId, antonymId])
 }
