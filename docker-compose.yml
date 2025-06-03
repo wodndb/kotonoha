@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
 
-  # Adminer: PHP 기반의 데이터베이스 관리 도구
+  # Adminer: PHP 기반의 가벼운 데이터베이스 관리 도구
   adminer:
     image: adminer
     restart: always

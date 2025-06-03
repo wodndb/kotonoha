@@ -23,4 +23,27 @@
 5. `yarn prisma db push` 명령어로 DB 스키마 생성
 6. `yarn dev` 명령어로 Next.js 애플리케이션 실행
 
-# 개발자를 위한 데이터베이스 업데이트 절차 (작성 예정)
+# prisma로 마이그레이션 관리하기
+
+## 초기 마이그레이션 추가 (최초 1회)
+
+```bash
+yarn prisma migrate dev --name init
+```
+
+## 스키마 업데이트 후 마이그레이션 추가
+
+```bash
+# 테스트 목적으로 마이그레이션 없이 스키마 바로 DB에 반영
+yarn prisma db push --preview-feature
+
+# 테스트까지 완료 후 변경된 스키마에 대한 마이그레이션 생성
+yarn prisma migrate reset
+yarn prisma migrate dev --name \<migration_name\>
+```
+
+## 실제 DB에 마이그레이션 적용
+
+```bash
+yarn prisma migrate deploy
+```
