@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/app/generated/prisma"
+  output   = "../src/app/generated/prisma" // prisma에서 권장하는 nextjs 프로젝트 상의 generated 폴더 위치
 }
 
 datasource db {
