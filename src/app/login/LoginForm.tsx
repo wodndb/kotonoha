@@ -1,3 +1,4 @@
+import { signIn } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,8 +10,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { login, signup } from "./actions";
-import { signIn } from "@/auth";
 
 export function LoginForm({
   className,
@@ -38,36 +37,24 @@ export function LoginForm({
                   required
                 />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" name="password" type="password" required />
-              </div>
               <div className="flex flex-col gap-3">
-                <Button className="w-full" formAction={login}>
-                  Login
+                <Button
+                  className="w-full"
+                  formAction={async (formData) => {
+                    "use server";
+                    await signIn("resend", {
+                      email: formData.get("email") as string,
+                      redirect: true,
+                      redirectTo: "/",
+                    });
+                  }}
+                >
+                  Login with Email (Magic Link)
                 </Button>
               </div>
             </div>
-            <div className="my-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Button
-                variant={"link"}
-                className="underline underline-offset-4"
-                formAction={signup}
-              >
-                Sign up
-              </Button>
-            </div>
           </form>
-          <div className="mb-4 after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+          <div className="my-4 after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-background text-muted-foreground relative z-10 px-2">
               Or continue with
             </span>
