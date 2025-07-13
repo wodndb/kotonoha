@@ -124,7 +124,7 @@ model Word {
   text String
 
   /// kanji, gana, mixed
-  type String
+  hasKanji Boolean
 
   /// JLPT N1, N2 등 또는 그 외
   level String?
@@ -132,13 +132,11 @@ model Word {
   /// 단어 전체의 대표 요미가나 (예: にほんご)
   reading String?
 
-  /// 품사 (예: 명사, 동사)
-  partOfSpeech String?
+  /// 단어를 구성하는 문자 별로 요미가나를 쪼개서 저장한 데이터.
+  components Json?
 
-  components WordComponent[]
-  meanings   WordMeaning[]
-  examples   Example[]
-  UserWord   UserWord[]
+  meanings Meaning[]
+  UserWord UserWord[]
 
   synonymsFrom WordSynonym[] @relation("SynonymFrom")
   synonymsTo   WordSynonym[] @relation("SynonymTo")
@@ -147,59 +145,27 @@ model Word {
   antonymsTo   WordAntonym[] @relation("AntonymTo")
 }
 
-/// 단어의 요미가나를 저장하기 위한 단어의 개별 문자 모델로
-/// 이 모델은 단어(Word)와 1:N 관계를 가지며, 각 단어는 여러 개의 문자를 포함할 수 있습니다.
-model WordComponent {
-  id     Int @id @default(autoincrement())
-  wordId Int
-
-  /// 단어를 구성하는 개별 문자 (예: 日, 本, 語)
-  char String
-
-  /// 해당 문자의 요미가나 (예: 日 -> にち)
-  reading String?
-
-  /// 문자의 타입
-  type CharType
-
-  word Word @relation(fields: [wordId], references: [id])
-}
-
 /// 단어의 의미를 정의하는 모델.
 model Meaning {
-  id Int @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
+  wordId       Int
+  text         String
+  partOfSpeech String?
 
-  /// 한국어 뜻
-  text String
+  examples Example[]
 
-  words WordMeaning[]
-}
-
-/// 단어와 의미의 관계를 정의하는 모델.
-/// 단어(Word)와 의미(Meaning) 사이의 다대다 관계를 표현합니다.
-/// 단어에는 여러 의미가 있을 수 있고, 의미는 여러 단어에 연결될 수 있습니다.
-model WordMeaning {
-  wordId    Int
-  meaningId Int
-
-  word    Word    @relation(fields: [wordId], references: [id])
-  meaning Meaning @relation(fields: [meaningId], references: [id])
-
-  @@id([wordId, meaningId])
+  word Word @relation(fields: [wordId], references: [id])
 }
 
 /// 단어의 예문을 정의하는 모델.
 model Example {
-  id     Int @id @default(autoincrement())
-  wordId Int
+  id Int @id @default(autoincrement())
 
-  /// 일본어 예문
-  sentence String
+  sentence    String
+  translation String?
 
-  /// 예문 한국어 번역
-  translation String
-
-  word Word @relation(fields: [wordId], references: [id])
+  meaningId Int
+  meaning   Meaning @relation(fields: [meaningId], references: [id])
 }
 
 /// 단어의 동의어 관계를 정의하는 모델.
