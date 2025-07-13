@@ -35,6 +35,39 @@ enum StudyStatus {
   SKIP
 }
 
+/// 퀴즈 유형을 정의하는 enum
+enum QuizType {
+  /// 단어 뜻 맞추기 (일본어 -> 한국어)
+  MEANING_MATCHING
+
+  /// 단어 읽기 맞추기 (일본어 -> 요미가나)
+  READING_MATCHING
+
+  /// 빈칸 채우기 (예문 내 단어)
+  FILL_IN_THE_BLANK
+
+  /// 듣기 문제
+  LISTENING
+
+  /// 객관식 (4지선다 등)
+  MULTIPLE_CHOICE
+
+  /// 주관식 (직접 입력)
+  SHORT_ANSWER
+}
+
+/// 사용자 역할을 정의하는 enum
+enum UserRoleType {
+  /// 일반 사용자 (기본값)
+  USER
+
+  /// 단어 추가/편집 권한이 있는 사용자
+  EDITOR
+
+  /// 모든 관리 권한이 있는 사용자
+  ADMIN
+}
+
 /// [AuthJS] 사용자 모델
 model User {
   id            String    @id @default(cuid())
@@ -48,7 +81,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  UserWord UserWord[]
+  UserWord    UserWord[]
+  QuizSession QuizSession[]
+  QuizRecord  QuizRecord[]
+
+  /// 사용자의 역할 (기본값은 USER)
+  role UserRoleType @default(USER)
 }
 
 /// [AuthJS] 계정 모델
@@ -143,6 +181,7 @@ model Word {
 
   antonymsFrom WordAntonym[] @relation("AntonymFrom")
   antonymsTo   WordAntonym[] @relation("AntonymTo")
+  QuizRecord   QuizRecord[]
 }
 
 /// 단어의 의미를 정의하는 모델.
@@ -192,4 +231,45 @@ model WordAntonym {
   antonym Word @relation("AntonymTo", fields: [antonymId], references: [id])
 
   @@id([wordId, antonymId])
+}
+
+/// 퀴즈 세션 모델
+/// 사용자가 여러 문제를 연속해서 푸는 퀴즈 세션을 기록합니다.
+model QuizSession {
+  id             Int       @id @default(autoincrement())
+  userId         String
+  startedAt      DateTime  @default(now())
+  endedAt        DateTime?
+  score          Int? // 세션 총점 (선택 사항)
+  totalQuestions Int? // 세션 내 총 문제 수 (선택 사항)
+
+  user User @relation(fields: [userId], references: [id])
+
+  QuizRecord QuizRecord[] // 이 세션에 속한 퀴즈 기록들
+
+  @@index([userId])
+}
+
+/// 퀴즈 기록 모델
+/// 사용자의 개별 퀴즈 풀이 기록을 저장합니다.
+model QuizRecord {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  wordId        Int
+  quizTypeId    QuizType // 퀴즈 유형 (enum 사용)
+  isCorrect     Boolean // 정답 여부
+  attemptedAt   DateTime @default(now()) // 문제 풀이 시각
+  responseTime  Int? // 문제 풀이에 걸린 시간 (밀리초 단위, 선택 사항)
+  userAnswer    String? // 사용자가 입력한 답 (주관식 등에서 유용)
+  correctAnswer String? // 정답 (확인용, 선택 사항)
+
+  // QuizSession과 연결 (선택 사항)
+  quizSessionId Int?
+  quizSession   QuizSession? @relation(fields: [quizSessionId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
+  word Word @relation(fields: [wordId], references: [id])
+
+  @@index([userId, wordId, quizTypeId]) // 쿼리 효율성을 위한 인덱스 추가
+  @@index([quizSessionId]) // 퀴즈 세션별 조회를 위한 인덱스
 }

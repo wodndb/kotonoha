@@ -19,7 +19,7 @@ services:
       POSTGRES_PASSWORD: w1L3SB08NgXkKWq1K6QH
       POSTGRES_DB: kotonoha
     ports:
-      - 5432:5432
+      - 35432:5432
     env_file:
       - .env
 
@@ -28,4 +28,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 38080:8080
