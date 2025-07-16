@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { notoSans, notoSansJP } from "./fonts";
 import "./globals.css";
+import { AppSidebar } from "@/components/AppSideBar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeModeToggle } from "@/components/ThemeModeToggle";
 
 export const metadata: Metadata = {
   title: "kotonoha",
@@ -13,11 +17,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body
         className={`${notoSans.variable} ${notoSansJP.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SidebarProvider>
+            <AppSidebar />
+            <main className="w-dvw h-dvh">
+              <div className="w-full justify-between flex items-center h-12 px-3 border-b">
+                <SidebarTrigger />
+                <ThemeModeToggle />
+              </div>
+              {children}
+            </main>
+          </SidebarProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
