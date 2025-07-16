@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/AppSideBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeModeToggle } from "@/components/ThemeModeToggle";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "kotonoha",
@@ -28,14 +29,16 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <AppSidebar />
-            <main className="w-dvw h-dvh">
-              <div className="w-full justify-between flex items-center h-12 px-3 border-b">
-                <SidebarTrigger />
-                <ThemeModeToggle />
-              </div>
-              {children}
-            </main>
+            <SessionProvider>
+              <AppSidebar />
+              <main className="w-dvw h-dvh">
+                <div className="w-full justify-between flex items-center h-12 px-3 border-b">
+                  <SidebarTrigger />
+                  <ThemeModeToggle />
+                </div>
+                {children}
+              </main>
+            </SessionProvider>
           </SidebarProvider>
         </ThemeProvider>
       </body>
