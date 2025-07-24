@@ -18,12 +18,12 @@ import { NavUser } from "./NavUser";
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Words",
+    url: "/words",
     icon: Inbox,
   },
   {
