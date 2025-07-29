@@ -1,9 +1,8 @@
-import { getWords } from "@/data/word";
-import { ColumnDef } from "@tanstack/react-table";
-import { Word } from "../generated/prisma";
-import { DataTable } from "./components/data-table";
 import { Button } from "@/components/ui/button";
+import { getWords, Word } from "@/data/words";
+import { ColumnDef } from "@tanstack/react-table";
 import { AddWordDialog } from "./components/add-word-dialog";
+import { DataTable } from "./components/data-table";
 
 const columns: ColumnDef<Word>[] = [
   {

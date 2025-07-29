@@ -161,7 +161,7 @@ model Word {
   /// 단어 본문 (예: 日本語)
   text String
 
-  /// kanji, gana, mixed
+  /// kanji, kana, mixed
   hasKanji Boolean
 
   /// JLPT N1, N2 등 또는 그 외
@@ -171,7 +171,7 @@ model Word {
   reading String?
 
   /// 단어를 구성하는 문자 별로 요미가나를 쪼개서 저장한 데이터.
-  components Json?
+  components Json[]
 
   meanings Meaning[]
   UserWord UserWord[]

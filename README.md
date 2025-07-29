@@ -42,7 +42,11 @@ yarn prisma db push
 
 # 테스트까지 완료 후 변경된 스키마에 대한 마이그레이션 생성
 yarn prisma migrate reset
-yarn prisma migrate dev --name \<migration_name\>
+yarn prisma migrate dev --name \<migration_name\> --create-only
+
+# 만약 생성된 마이그레이션 sql 파일에 문제가 있는 경우 (계속 사용되어야 할 기존 데이터를 삭제하는 등...)
+# sql 파일을 수정하고 나서
+yarn prisma migrate deploy
 ```
 
 ## 실제 DB에 마이그레이션 적용
