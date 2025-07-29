@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Word } from "../generated/prisma";
 import { DataTable } from "./components/data-table";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { AddWordDialog } from "./components/add-word-dialog";
 
 const columns: ColumnDef<Word>[] = [
   {
@@ -28,7 +28,7 @@ export default async function Page() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Words</h1>
         <Button asChild>
-          <Link href="/words/add">Add Word</Link>
+          <AddWordDialog />
         </Button>
       </div>
       <DataTable columns={columns} data={words} />
